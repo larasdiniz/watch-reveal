@@ -1,19 +1,20 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { Truck, RefreshCw, Shield } from "lucide-react";
 
 const iconCards = [
   {
-    icon: "🚚",
+    Icon: Truck,
     title: "Frete Grátis",
     description: "Entrega expressa para todo o Brasil em até 3 dias úteis.",
   },
   {
-    icon: "🔄",
+    Icon: RefreshCw,
     title: "30 Dias",
     description: "Devolução gratuita se não ficar 100% satisfeito.",
   },
   {
-    icon: "🛡️",
+    Icon: Shield,
     title: "Garantia Vitalícia",
     description: "Cobertura completa contra defeitos de fabricação.",
   },
@@ -35,8 +36,8 @@ const IconCardsSection = () => {
               transition={{ duration: 0.5, delay: 0.1 * index }}
               className="bg-surface-elevated rounded-3xl p-8 text-center group hover:bg-surface-elevated/80 transition-colors"
             >
-              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {card.icon}
+              <div className="w-14 h-14 mx-auto rounded-full bg-gold/10 flex items-center justify-center mb-4 group-hover:bg-gold/20 group-hover:scale-110 transition-all duration-300">
+                <card.Icon className="w-6 h-6 text-gold" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 {card.title}

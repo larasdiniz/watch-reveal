@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import watchHero from "@/assets/watch-hero.png";
 import { Button } from "@/components/ui/button";
 
@@ -43,9 +44,11 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <Button variant="gold" size="lg" className="rounded-full px-8">
-            Comprar
-          </Button>
+          <Link to="/comprar">
+            <Button variant="gold" size="lg" className="rounded-full px-8">
+              Comprar
+            </Button>
+          </Link>
         </motion.div>
       </div>
 

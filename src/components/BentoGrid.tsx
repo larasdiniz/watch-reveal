@@ -63,16 +63,14 @@ const bentoItems = [
     content: (
       <div className="flex flex-col justify-center h-full">
         <div className="grid grid-cols-3 gap-4 mb-6">
-          {["Preto", "Marrom", "Azul"].map((cor) => (
-            <div key={cor} className="text-center">
-              <div 
-                className={`w-10 h-10 mx-auto rounded-full mb-2 border border-border
-                  ${cor === "Preto" ? "bg-neutral-900" : ""}
-                  ${cor === "Marrom" ? "bg-amber-900" : ""}
-                  ${cor === "Azul" ? "bg-blue-900" : ""}
-                `}
-              />
-              <span className="text-xs text-muted-foreground">{cor}</span>
+          {[
+            { name: "Preto", color: "bg-neutral-900" },
+            { name: "Marrom", color: "bg-amber-900" },
+            { name: "Azul", color: "bg-blue-900" },
+          ].map((cor) => (
+            <div key={cor.name} className="text-center">
+              <div className={`w-10 h-10 mx-auto rounded-full mb-2 border border-border ${cor.color}`} />
+              <span className="text-xs text-muted-foreground">{cor.name}</span>
             </div>
           ))}
         </div>

@@ -1,5 +1,6 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { Zap, Target, Wrench } from "lucide-react";
 import watchDetail from "@/assets/watch-detail.png";
 
 const FeatureStory = () => {
@@ -13,6 +14,12 @@ const FeatureStory = () => {
   
   const imageScale = useTransform(scrollYProgress, [0, 0.5], [1.1, 1]);
   const imageOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 1]);
+
+  const features = [
+    { Icon: Zap, title: "Movimento Automático", desc: "Recarrega com o movimento do pulso" },
+    { Icon: Target, title: "Alta Precisão", desc: "Certificado COSC de cronômetro" },
+    { Icon: Wrench, title: "Manutenção Simplificada", desc: "Revisão a cada 5 anos" },
+  ];
 
   return (
     <section ref={containerRef} className="relative py-32 overflow-hidden">
@@ -70,11 +77,7 @@ const FeatureStory = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="space-y-6"
             >
-              {[
-                { icon: "⚡", title: "Movimento Automático", desc: "Recarrega com o movimento do pulso" },
-                { icon: "🎯", title: "Alta Precisão", desc: "Certificado COSC de cronômetro" },
-                { icon: "🔧", title: "Manutenção Simplificada", desc: "Revisão a cada 5 anos" },
-              ].map((feature, index) => (
+              {features.map((feature, index) => (
                 <motion.div
                   key={feature.title}
                   initial={{ opacity: 0, x: -20 }}
@@ -82,7 +85,9 @@ const FeatureStory = () => {
                   transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
                   className="flex items-start gap-4 group"
                 >
-                  <span className="text-2xl">{feature.icon}</span>
+                  <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0 group-hover:bg-gold/20 transition-colors">
+                    <feature.Icon className="w-5 h-5 text-gold" />
+                  </div>
                   <div>
                     <h4 className="text-foreground font-medium mb-1 group-hover:text-gold transition-colors">
                       {feature.title}
