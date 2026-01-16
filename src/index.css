@@ -87,6 +87,16 @@
   .glass-surface {
     @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
+
+  /* Hide scrollbar for horizontal scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer utilities {
