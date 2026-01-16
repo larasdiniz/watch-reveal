@@ -1,8 +1,10 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import CraftsmanshipSection from "@/components/CraftsmanshipSection";
-import SpecsSection from "@/components/SpecsSection";
+import MediaCardGallery from "@/components/MediaCardGallery";
+import FeatureStory from "@/components/FeatureStory";
+import BentoGrid from "@/components/BentoGrid";
+import ComparisonSection from "@/components/ComparisonSection";
+import IconCardsSection from "@/components/IconCardsSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -11,9 +13,11 @@ const Index = () => {
     <main className="bg-background text-foreground overflow-x-hidden">
       <Header />
       <HeroSection />
-      <FeaturesSection />
-      <CraftsmanshipSection />
-      <SpecsSection />
+      <MediaCardGallery />
+      <FeatureStory />
+      <BentoGrid />
+      <ComparisonSection />
+      <IconCardsSection />
       <CTASection />
       <Footer />
     </main>
