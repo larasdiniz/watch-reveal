@@ -1,5 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import watchHero from "@/assets/watch-hero.png";
 
@@ -48,9 +49,11 @@ const CTASection = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button variant="gold" size="lg" className="rounded-full px-10">
-            Comprar Agora
-          </Button>
+          <Link to="/comprar">
+            <Button variant="gold" size="lg" className="rounded-full px-10">
+              Comprar Agora
+            </Button>
+          </Link>
           <Button variant="outline" size="lg" className="rounded-full px-10">
             Agendar Visita
           </Button>

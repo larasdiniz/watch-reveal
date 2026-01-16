@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -12,9 +13,9 @@ const Header = () => {
       <div className="section-padding py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
-          <div className="text-lg font-semibold tracking-wider">
+          <Link to="/" className="text-lg font-semibold tracking-wider">
             CHRONO<span className="text-gold">ELITE</span>
-          </div>
+          </Link>
           
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8">
@@ -34,9 +35,11 @@ const Header = () => {
             <span className="hidden sm:block text-sm text-muted-foreground">
               A partir de <span className="text-foreground font-medium">R$ 24.900</span>
             </span>
-            <Button variant="gold" size="sm" className="rounded-full">
-              Comprar
-            </Button>
+            <Link to="/comprar">
+              <Button variant="gold" size="sm" className="rounded-full">
+                Comprar
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

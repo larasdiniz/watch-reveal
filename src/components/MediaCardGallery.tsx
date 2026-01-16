@@ -1,5 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { Gem, Droplets } from "lucide-react";
 import watchDetail from "@/assets/watch-detail.png";
 import watchStrap from "@/assets/watch-strap.png";
 
@@ -17,7 +18,7 @@ const cards = [
     subtitle: "Proteção anti-reflexo com dureza 9 na escala Mohs.",
     image: null,
     size: "small",
-    icon: "💎",
+    Icon: Gem,
   },
   {
     id: 3,
@@ -25,6 +26,7 @@ const cards = [
     subtitle: "Resistência à água certificada.",
     image: null,
     size: "small",
+    Icon: Droplets,
     highlight: true,
   },
   {
@@ -95,13 +97,22 @@ const MediaCardGallery = () => {
                 )}
 
                 <div className="relative z-10 h-full flex flex-col justify-end p-6">
-                  {card.icon && (
-                    <span className="text-4xl mb-4">{card.icon}</span>
+                  {card.Icon && !card.highlight && (
+                    <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mb-4">
+                      <card.Icon className="w-6 h-6 text-gold" />
+                    </div>
                   )}
                   
                   {card.highlight && (
-                    <div className="text-5xl md:text-6xl font-bold text-gradient-gold mb-2">
-                      {card.title}
+                    <div className="mb-2">
+                      {card.Icon && (
+                        <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mb-3">
+                          <card.Icon className="w-6 h-6 text-gold" />
+                        </div>
+                      )}
+                      <div className="text-5xl md:text-6xl font-bold text-gradient-gold">
+                        {card.title}
+                      </div>
                     </div>
                   )}
                   
