@@ -1,8 +1,15 @@
 import type { Config } from "tailwindcss";
+import tailwindAnimate from "tailwindcss-animate";
 
-export default {
+
+const config = {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -66,9 +73,18 @@ export default {
         ],
       },
       fontSize: {
-        "display-xl": ["clamp(3rem, 10vw, 7rem)", { lineHeight: "1", letterSpacing: "-0.02em", fontWeight: "600" }],
-        "display-lg": ["clamp(2.5rem, 6vw, 5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "600" }],
-        "display-md": ["clamp(1.5rem, 4vw, 3rem)", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "500" }],
+        "display-xl": [
+          "clamp(3rem, 10vw, 7rem)",
+          { lineHeight: "1", letterSpacing: "-0.02em", fontWeight: "600" },
+        ],
+        "display-lg": [
+          "clamp(2.5rem, 6vw, 5rem)",
+          { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "600" },
+        ],
+        "display-md": [
+          "clamp(1.5rem, 4vw, 3rem)",
+          { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "500" },
+        ],
         "body-lg": ["1.25rem", { lineHeight: "1.6", fontWeight: "400" }],
       },
       borderRadius: {
@@ -107,5 +123,8 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindAnimate],
 } satisfies Config;
+
+
+export default config;

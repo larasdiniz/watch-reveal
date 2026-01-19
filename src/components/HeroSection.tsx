@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import watchHero from "@/assets/watch-hero.png";
 import { Button } from "@/components/ui/button";
 
+
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-background">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-gold/5 via-transparent to-background pointer-events-none" />
-      
+     
       {/* Main content */}
       <div className="relative z-10 text-center section-padding pt-32">
         <motion.p
@@ -19,7 +20,7 @@ const HeroSection = () => {
         >
           ChronoElite
         </motion.p>
-        
+       
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -28,29 +29,33 @@ const HeroSection = () => {
         >
           Icônico. <span className="text-gradient-gold">Atemporal.</span>
         </motion.h1>
-        
+
+
+        {/* Container de vidro transparente com texto E botão */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
+          className="inline-flex items-center backdrop-blur-md bg-white/5 border border-white/10 rounded-full px-6 py-3 gap-6"
         >
-          <span className="text-muted-foreground">ChronoElite Classic</span>
-          <span className="text-foreground font-medium">R$ 24.900</span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
+          {/* Texto à esquerda */}
+          <div className="text-left">
+            <div className="text-muted-foreground text-sm">ChronoElite Classic</div>
+            <div className="text-foreground font-medium text-lg">R$ 24.900</div>
+          </div>
+         
+          {/* Separador vertical */}
+          <div className="h-8 w-px bg-white/20"></div>
+         
+          {/* Botão à direita */}
           <Link to="/comprar">
-            <Button variant="gold" size="lg" className="rounded-full px-8">
+            <Button variant="gold" size="lg" className="rounded-full px-6">
               Comprar
             </Button>
           </Link>
         </motion.div>
       </div>
+
 
       {/* Hero image */}
       <motion.div
@@ -66,12 +71,13 @@ const HeroSection = () => {
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
-        
+       
         {/* Glow effect under watch */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-gold/10 blur-[80px] rounded-full" />
       </motion.div>
     </section>
   );
 };
+
 
 export default HeroSection;
