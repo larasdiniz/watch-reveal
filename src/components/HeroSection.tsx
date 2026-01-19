@@ -28,26 +28,24 @@ const HeroSection = () => {
         >
           Icônico. <span className="text-gradient-gold">Atemporal.</span>
         </motion.h1>
-
-        {/* Container de vidro transparente com texto E botão */}
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="inline-flex items-center backdrop-blur-md bg-white/5 border border-white/10 rounded-full px-6 py-3 gap-6"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
         >
-          {/* Texto à esquerda */}
-          <div className="text-left">
-            <div className="text-muted-foreground text-sm">ChronoElite Classic</div>
-            <div className="text-foreground font-medium text-lg">R$ 24.900</div>
-          </div>
-          
-          {/* Separador vertical */}
-          <div className="h-8 w-px bg-white/20"></div>
-          
-          {/* Botão à direita */}
+          <span className="text-muted-foreground">ChronoElite Classic</span>
+          <span className="text-foreground font-medium">R$ 24.900</span>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
           <Link to="/comprar">
-            <Button variant="gold" size="lg" className="rounded-full px-6">
+            <Button variant="gold" size="lg" className="rounded-full px-8">
               Comprar
             </Button>
           </Link>

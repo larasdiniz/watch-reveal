@@ -1,4 +1,3 @@
-// components/Header.tsx
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,24 +19,15 @@ const Header = () => {
           
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link 
-              to="/" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              Visão Geral
-            </Link>
-            <Link 
-              to="/#especificacoes" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              Especificações
-            </Link>
-            <Link 
-              to="/modelos" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              Modelos
-            </Link>
+            {["Visão Geral", "Especificações", "Modelos"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase().replace(" ", "-")}`}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                {item}
+              </a>
+            ))}
           </nav>
 
           {/* CTA */}
