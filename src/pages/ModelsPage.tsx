@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Filter,
@@ -14,163 +14,51 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import watchHero from "@/assets/watch-hero.png";
-import watchModel3 from "@/assets/wacth-model3.png";
-import watchModel3Detail from "@/assets/watch-model3-detail.png";
-import watchModel2 from "@/assets/watch-model2.png";
-import watchModel2Detail from "@/assets/watch-model2-detail.png";
-import watchModel4 from "@/assets/watch-model4.png";
-import watchModel5 from "@/assets/watch-model5.png";
-import watchModel6 from "@/assets/watch-model6.png";
-import watchModel7 from "@/assets/watch-model7.png";
-import watchModel8 from "@/assets/watch-model8.png";
-import watchModel9 from "@/assets/watch-model9.png";
-
-
-
-// Dados dos relógios
-const watchModels = [
-  {
-    id: 1,
-    name: "Chrono Classic",
-    category: "Clássico",
-    price: 24900,
-    originalPrice: 29900,
-    rating: 4.9,
-    reviews: 128,
-    image: watchHero,
-    colors: ["#0F172A", "#92400E", "#1E40AF"],
-    features: ["Automático", "Aço 316L", "Cristal Safira"],
-    isNew: true,
-    isLimited: false,
-  },
-  {
-    id: 2,
-    name: "Chrono Gold",
-    category: "Premium",
-    price: 48900,
-    originalPrice: null,
-    rating: 5.0,
-    reviews: 64,
-    image: watchModel3,
-    colors: ["#B45309", "#78350F", "#F59E0B"],
-    features: ["Ouro 18K", "Edição Limitada", "Automático"],
-    isNew: false,
-    isLimited: true,
-  },
-  {
-    id: 3,
-    name: "Chrono Sport",
-    category: "Esportivo",
-    price: 32900,
-    originalPrice: 37900,
-    rating: 4.7,
-    reviews: 89,
-    image: watchModel2,
-    colors: ["#047857", "#1E3A8A", "#0F172A"],
-    features: ["100m Resistência", "Cronógrafo", "Cerâmica"],
-    isNew: true,
-    isLimited: false,
-  },
-  {
-    id: 4,
-    name: "Chrono Minimal",
-    category: "Minimalista",
-    price: 21900,
-    originalPrice: 26900,
-    rating: 4.8,
-    reviews: 156,
-    image: watchModel4,
-    colors: ["#374151", "#111827", "#6B7280"],
-    features: ["Quartz Suíço", "Ultra-fino", "Couro Italiano"],
-    isNew: false,
-    isLimited: false,
-  },
-  {
-    id: 5,
-    name: "Chrono Heritage",
-    category: "Vintage",
-    price: 41900,
-    originalPrice: null,
-    rating: 4.9,
-    reviews: 42,
-    image: watchModel8,
-    colors: ["#78350F", "#92400E", "#F59E0B"],
-    features: ["Edição 1987", "Manufatura", "Números Romanos"],
-    isNew: false,
-    isLimited: true,
-  },
-  {
-    id: 6,
-    name: "Chrono Dive",
-    category: "Mergulho",
-    price: 38900,
-    originalPrice: 43900,
-    rating: 4.6,
-    reviews: 73,
-    image: watchModel5,
-    colors: ["#0F766E", "#1E40AF", "#0F172A"],
-    features: ["300m Resistência", "Luminova", "Bisel Giratório"],
-    isNew: true,
-    isLimited: false,
-  },
-  {
-    id: 7,
-    name: "Chrono Tourbillon",
-    category: "Alta Relojoaria",
-    price: 189000,
-    originalPrice: null,
-    rating: 5.0,
-    reviews: 12,
-    image: watchModel6,
-    colors: ["#F59E0B", "#78350F", "#92400E"],
-    features: ["Tourbillon", "Platina", "Manufatura Completa"],
-    isNew: false,
-    isLimited: true,
-  },
-  {
-    id: 8,
-    name: "Chrono GMT",
-    category: "Viagem",
-    price: 35900,
-    originalPrice: 39900,
-    rating: 4.7,
-    reviews: 58,
-    image: watchModel7,
-    colors: ["#1E40AF", "#0F172A", "#374151"],
-    features: ["GMT Function", "24h Display", "2 Fusos Horários"],
-    isNew: true,
-    isLimited: false,
-  },
-  {
-    id: 9,
-    name: "ChronoCouro Black",
-    category: "Viagem",
-    price: 35900,
-    originalPrice: 39900,
-    rating: 4.7,
-    reviews: 58,
-    image: watchModel9,
-    colors: ["#1E40AF", "#0F172A", "#374151"],
-    features: ["GMT Function", "24h Display", "2 Fusos Horários"],
-    isNew: true,
-    isLimited: false,
-  },
-];
-
 
 // Filtros disponíveis
 const categories = ["Todos", "Clássico", "Premium", "Esportivo", "Minimalista", "Vintage", "Mergulho", "Alta Relojoaria", "Viagem"];
 const priceRanges = [
   { label: "Todos", min: 0, max: Infinity },
-  { label: "Até R$ 25.000", min: 0, max: 25000 },
-  { label: "R$ 25.000 - R$ 40.000", min: 25000, max: 40000 },
-  { label: "R$ 40.000 - R$ 60.000", min: 40000, max: 60000 },
-  { label: "Acima de R$ 60.000", min: 60000, max: Infinity },
+  { label: "Até R$ 250,00", min: 0, max: 25000 },
+  { label: "R$ 250,00 - R$ 400,00", min: 25000, max: 40000 },
+  { label: "R$ 400,00 - R$ 600,00", min: 40000, max: 60000 },
+  { label: "Acima de R$ 600,00", min: 60000, max: Infinity },
 ];
 
+interface Watch {
+  id: number;
+  name: string;
+  category: string;
+  price: number; // EM CENTAVOS
+  originalPrice: number | null; // EM CENTAVOS
+  rating: number;
+  reviews: number;
+  image: string;
+  colors: string[];
+  features: string[];
+  isNew: boolean;
+  isLimited: boolean;
+}
+
+// Interface para os dados que vêm da API
+interface ApiWatch {
+  id: number;
+  name: string;
+  category: string;
+  price: number; // EM CENTAVOS
+  original_price: number | null; // EM CENTAVOS
+  rating: string | number;
+  reviews: number;
+  image_url: string;
+  colors: string[];
+  features: string[];
+  is_new: boolean;
+  is_limited: boolean;
+}
 
 const ModelsPage = () => {
+  const [watches, setWatches] = useState<Watch[]>([]);
+  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [selectedPriceRange, setSelectedPriceRange] = useState("Todos");
@@ -178,28 +66,101 @@ const ModelsPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
 
+  // Função para formatar preço (centavos para reais)
+  const formatPrice = (priceInCents: number) => {
+    return `R$ ${(priceInCents / 100).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+  };
 
-  // Filtrar relógios
-  const filteredWatches = watchModels.filter(watch => {
-    // Filtro por categoria
+  const formatPriceWithoutCents = (priceInCents: number) => {
+    return `R$ ${Math.floor(priceInCents / 100).toLocaleString('pt-BR')}`;
+  };
+
+  // Buscar dados da API
+  useEffect(() => {
+    const fetchWatches = async () => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams();
+        
+        if (selectedCategory !== "Todos") {
+          params.append('category', selectedCategory);
+        }
+        
+        if (selectedPriceRange !== "Todos") {
+          const priceRange = priceRanges.find(range => range.label === selectedPriceRange);
+          if (priceRange) {
+            params.append('minPrice', priceRange.min.toString());
+            params.append('maxPrice', priceRange.max === Infinity ? '1000000' : priceRange.max.toString());
+          }
+        }
+        
+        if (searchQuery) {
+          params.append('search', searchQuery);
+        }
+        
+        params.append('sortBy', sortBy);
+        
+        const response = await fetch(`http://localhost:3001/api/watches?${params.toString()}`);
+        
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const data: ApiWatch[] = await response.json();
+        
+        // Converter para o formato que seu componente espera
+        const formattedWatches: Watch[] = data.map((watch) => ({
+          id: watch.id,
+          name: watch.name,
+          category: watch.category,
+          price: watch.price, // Mantém em centavos
+          originalPrice: watch.original_price || null, // Mantém em centavos
+          rating: typeof watch.rating === 'string' ? parseFloat(watch.rating) : watch.rating,
+          reviews: watch.reviews,
+          image: watch.image_url,
+          colors: watch.colors || [],
+          features: watch.features || [],
+          isNew: watch.is_new,
+          isLimited: watch.is_limited
+        }));
+        
+        setWatches(formattedWatches);
+        
+      } catch (error) {
+        console.error('Erro ao buscar relógios:', error);
+        setWatches([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchWatches();
+  }, [selectedCategory, selectedPriceRange, searchQuery, sortBy]);
+
+  // Filtrar relógios localmente (apenas para fallback)
+  const filteredWatches = watches.filter(watch => {
     if (selectedCategory !== "Todos" && watch.category !== selectedCategory) {
       return false;
     }
    
-    // Filtro por preço
     const priceRange = priceRanges.find(range => range.label === selectedPriceRange);
-    if (priceRange && (watch.price < priceRange.min || watch.price > priceRange.max)) {
-      return false;
+    if (priceRange && priceRange.label !== "Todos") {
+      if (priceRange.max === Infinity) {
+        if (watch.price < priceRange.min) return false;
+      } else {
+        if (watch.price < priceRange.min || watch.price > priceRange.max) return false;
+      }
     }
    
-    // Filtro por busca
     if (searchQuery && !watch.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
    
     return true;
   });
-
 
   // Ordenar relógios
   const sortedWatches = [...filteredWatches].sort((a, b) => {
@@ -217,12 +178,28 @@ const ModelsPage = () => {
     }
   });
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="pt-32 pb-20 section-padding">
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto"></div>
+              <p className="mt-4 text-muted-foreground">Carregando relógios...</p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
      
-      {/* Hero da página de modelos */}
       <section className="pt-32 pb-20 section-padding relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-gold/5 via-transparent to-background" />
        
@@ -241,8 +218,6 @@ const ModelsPage = () => {
             </p>
           </motion.div>
 
-
-          {/* Barra de busca e filtros */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -250,7 +225,6 @@ const ModelsPage = () => {
             className="mb-12"
           >
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              {/* Barra de busca */}
               <div className="relative w-full md:w-auto md:flex-1 max-w-lg">
                 <Input
                   type="search"
@@ -264,10 +238,7 @@ const ModelsPage = () => {
                 </div>
               </div>
 
-
-              {/* Controles de visualização */}
               <div className="flex items-center gap-4">
-                {/* Botão filtros mobile */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -278,8 +249,6 @@ const ModelsPage = () => {
                   Filtros
                 </Button>
 
-
-                {/* Modos de visualização */}
                 <div className="flex border border-border rounded-full overflow-hidden">
                   <Button
                     variant={viewMode === "grid" ? "secondary" : "ghost"}
@@ -299,8 +268,6 @@ const ModelsPage = () => {
                   </Button>
                 </div>
 
-
-                {/* Ordenação */}
                 <div className="relative">
                   <select
                     value={sortBy}
@@ -318,8 +285,6 @@ const ModelsPage = () => {
               </div>
             </div>
 
-
-            {/* Filtros expandidos (mobile) */}
             {showFilters && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -368,12 +333,8 @@ const ModelsPage = () => {
             )}
           </motion.div>
 
-
-          {/* Filtros desktop */}
           <div className="hidden md:grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
-            {/* Coluna de filtros */}
             <div className="lg:col-span-1 space-y-8">
-              {/* Categorias */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">Categorias</h3>
                 <div className="space-y-2">
@@ -394,8 +355,6 @@ const ModelsPage = () => {
                 </div>
               </div>
 
-
-              {/* Faixa de preço */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">Faixa de Preço</h3>
                 <div className="space-y-2">
@@ -416,8 +375,6 @@ const ModelsPage = () => {
                 </div>
               </div>
 
-
-              {/* Badges de destaque */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">Destaques</h3>
                 <div className="space-y-3">
@@ -434,8 +391,6 @@ const ModelsPage = () => {
               </div>
             </div>
 
-
-            {/* Grade de produtos */}
             <div className="lg:col-span-3">
               <div className="flex items-center justify-between mb-6">
                 <p className="text-muted-foreground">
@@ -457,8 +412,6 @@ const ModelsPage = () => {
                 </div>
               </div>
 
-
-              {/* Grid de produtos */}
               {viewMode === "grid" ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                   {sortedWatches.map((watch, index) => (
@@ -471,7 +424,6 @@ const ModelsPage = () => {
                     >
                       <Link to={`/modelos/${watch.id}`}>
                         <div className="bg-surface-elevated rounded-3xl overflow-hidden border border-border hover:border-gold/30 transition-all duration-300 hover:shadow-2xl">
-                          {/* Imagem */}
                           <div className="relative aspect-square overflow-hidden bg-gradient-to-b from-surface-elevated to-surface">
                             <img
                               src={watch.image}
@@ -479,7 +431,6 @@ const ModelsPage = () => {
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                            
-                            {/* Badges */}
                             <div className="absolute top-4 left-4 flex flex-col gap-2">
                               {watch.isNew && (
                                 <Badge variant="gold" className="rounded-full">
@@ -494,8 +445,6 @@ const ModelsPage = () => {
                             </div>
                           </div>
 
-
-                          {/* Conteúdo */}
                           <div className="p-6">
                             <div className="flex items-start justify-between mb-2">
                               <div>
@@ -514,13 +463,10 @@ const ModelsPage = () => {
                               </div>
                             </div>
 
-
                             <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                               {watch.features.join(" • ")}
                             </p>
 
-
-                            {/* Cores disponíveis */}
                             <div className="flex items-center gap-2 mb-4">
                               {watch.colors.map((color, idx) => (
                                 <div
@@ -535,16 +481,14 @@ const ModelsPage = () => {
                               </span>
                             </div>
 
-
-                            {/* Preço */}
                             <div className="flex items-center justify-between">
                               <div>
                                 <p className="text-xl font-bold text-foreground">
-                                  R$ {watch.price.toLocaleString('pt-BR')}
+                                  {formatPrice(watch.price)}
                                 </p>
                                 {watch.originalPrice && (
                                   <p className="text-sm text-muted-foreground line-through">
-                                    R$ {watch.originalPrice.toLocaleString('pt-BR')}
+                                    {formatPrice(watch.originalPrice)}
                                   </p>
                                 )}
                               </div>
@@ -560,7 +504,6 @@ const ModelsPage = () => {
                   ))}
                 </div>
               ) : (
-                /* List View */
                 <div className="space-y-4">
                   {sortedWatches.map((watch, index) => (
                     <motion.div
@@ -572,7 +515,6 @@ const ModelsPage = () => {
                       <Link to={`/modelos/${watch.id}`}>
                         <div className="bg-surface-elevated rounded-2xl p-6 border border-border hover:border-gold/30 transition-all duration-300 group">
                           <div className="flex items-center gap-6">
-                            {/* Imagem */}
                             <div className="relative w-32 h-32 rounded-xl overflow-hidden shrink-0">
                               <img
                                 src={watch.image}
@@ -586,8 +528,6 @@ const ModelsPage = () => {
                               )}
                             </div>
 
-
-                            {/* Detalhes */}
                             <div className="flex-1">
                               <div className="flex items-start justify-between mb-2">
                                 <div>
@@ -606,11 +546,9 @@ const ModelsPage = () => {
                                 </div>
                               </div>
 
-
                               <p className="text-muted-foreground mb-4">
                                 {watch.features.join(" • ")}
                               </p>
-
 
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
@@ -626,11 +564,11 @@ const ModelsPage = () => {
                                  
                                   <div>
                                     <p className="text-lg font-bold text-foreground">
-                                      R$ {watch.price.toLocaleString('pt-BR')}
+                                      {formatPrice(watch.price)}
                                     </p>
                                     {watch.originalPrice && (
                                       <p className="text-sm text-muted-foreground line-through">
-                                        R$ {watch.originalPrice.toLocaleString('pt-BR')}
+                                        {formatPrice(watch.originalPrice)}
                                       </p>
                                     )}
                                   </div>
@@ -649,8 +587,6 @@ const ModelsPage = () => {
                 </div>
               )}
 
-
-              {/* Paginação */}
               {sortedWatches.length > 0 && (
                 <div className="mt-12 flex items-center justify-center">
                   <div className="flex items-center gap-2">
@@ -674,8 +610,6 @@ const ModelsPage = () => {
                 </div>
               )}
 
-
-              {/* Sem resultados */}
               {sortedWatches.length === 0 && (
                 <div className="text-center py-20">
                   <div className="w-24 h-24 mx-auto rounded-full bg-surface-elevated flex items-center justify-center mb-6">
@@ -704,8 +638,6 @@ const ModelsPage = () => {
         </div>
       </section>
 
-
-      {/* Banner de newsletter */}
       <section className="py-20 section-padding bg-gradient-to-b from-surface-elevated/50 to-background">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-display-md text-foreground mb-4">
@@ -727,11 +659,9 @@ const ModelsPage = () => {
         </div>
       </section>
 
-
       <Footer />
     </div>
   );
 };
-
 
 export default ModelsPage;

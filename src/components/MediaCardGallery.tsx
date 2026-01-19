@@ -1,46 +1,72 @@
+import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Gem, Droplets } from "lucide-react";
-import watchDetail from "@/assets/watch-detail.png";
-import watchStrap from "@/assets/watch-strap.png";
+import { Gem, Droplets, LucideIcon } from "lucide-react"; // Import correto
 
-const cards = [
-  {
-    id: 1,
-    title: "Precisão Suíça",
-    subtitle: "Movimento automático de alta precisão com 72h de reserva de marcha.",
-    image: watchDetail,
-    size: "large",
-  },
-  {
-    id: 2,
-    title: "Cristal Safira",
-    subtitle: "Proteção anti-reflexo com dureza 9 na escala Mohs.",
-    image: null,
-    size: "small",
-    Icon: Gem,
-  },
-  {
-    id: 3,
-    title: "100M",
-    subtitle: "Resistência à água certificada.",
-    image: null,
-    size: "small",
-    Icon: Droplets,
-    highlight: true,
-  },
-  {
-    id: 4,
-    title: "Couro Italiano",
-    subtitle: "Pulseira artesanal cortada à mão em Florença.",
-    image: watchStrap,
-    size: "medium",
-  },
-];
+interface GalleryCard {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string | null;
+  size: "large" | "medium" | "small";
+  Icon?: LucideIcon; // ← Tipo correto para ícones do lucide-react
+  highlight?: boolean;
+}
 
 const MediaCardGallery = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [cards, setCards] = useState<GalleryCard[]>([
+    {
+      id: 1,
+      title: "Precisão Suíça",
+      subtitle: "Movimento automático de alta precisão com 72h de reserva de marcha.",
+      image: "/assets/watch-detail.png",
+      size: "large",
+    },
+    {
+      id: 2,
+      title: "Cristal Safira",
+      subtitle: "Proteção anti-reflexo com dureza 9 na escala Mohs.",
+      image: null,
+      size: "small",
+      Icon: Gem,
+    },
+    {
+      id: 3,
+      title: "100M",
+      subtitle: "Resistência à água certificada.",
+      image: null,
+      size: "small",
+      Icon: Droplets,
+      highlight: true,
+    },
+    {
+      id: 4,
+      title: "Couro Italiano",
+      subtitle: "Pulseira artesanal cortada à mão em Florença.",
+      image: "/assets/watch-strap.png",
+      size: "medium",
+    },
+  ]);
+
+  // Opcional: Se quiser buscar imagens do banco
+  useEffect(() => {
+    const fetchGalleryImages = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/watches?limit=2');
+        if (response.ok) {
+          const watches = await response.json();
+          // Atualizar cards com imagens do banco se quiser
+          // setCards(prev => [...prev]);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar imagens da galeria:', error);
+      }
+    };
+
+    fetchGalleryImages();
+  }, []);
 
   return (
     <section ref={ref} className="py-20 section-padding">

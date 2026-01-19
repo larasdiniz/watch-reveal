@@ -1,11 +1,21 @@
+import { useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Zap, Target, Wrench } from "lucide-react";
-import watchDetail from "@/assets/watch-detail.png";
+
+interface WatchData {
+  id: number;
+  name: string;
+  category: string;
+  image_url: string;
+  features: string[];
+}
 
 const FeatureStory = () => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [watchData, setWatchData] = useState<WatchData | null>(null);
+  const [loading, setLoading] = useState(true);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -21,22 +31,51 @@ const FeatureStory = () => {
     { Icon: Wrench, title: "Manutenção Simplificada", desc: "Revisão a cada 5 anos" },
   ];
 
+  useEffect(() => {
+    const fetchWatchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3001/api/watches/1');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setWatchData(data);
+      } catch (error) {
+        console.error('Erro ao buscar dados do relógio:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWatchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="relative py-32 overflow-hidden bg-background">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section ref={containerRef} className="relative py-32 overflow-hidden">
-      {/* Full-width image background */}
       <motion.div 
         className="absolute inset-0"
         style={{ scale: imageScale, opacity: imageOpacity }}
       >
         <img
-          src={watchDetail}
-          alt="Watch Detail"
+          src={watchData?.image_url || "/assets/watch-detail.png"}
+          alt={watchData?.name || "Watch Detail"}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/60" />
       </motion.div>
 
-      {/* Content */}
       <div className="relative z-10 section-padding">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-2xl">
@@ -46,7 +85,7 @@ const FeatureStory = () => {
               transition={{ duration: 0.6 }}
               className="text-gold uppercase tracking-[0.3em] text-sm font-medium mb-6 block"
             >
-              Desempenho
+              {watchData?.category || "Desempenho"}
             </motion.span>
             
             <motion.h2
@@ -70,7 +109,6 @@ const FeatureStory = () => {
               uma precisão de ±2 segundos por dia.
             </motion.p>
 
-            {/* Feature list */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}

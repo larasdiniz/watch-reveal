@@ -28,6 +28,11 @@ export interface OrderItem {
   price: number;
   quantity: number;
   imageUrl: string;
+  // Novos campos do banco
+  features?: string[];
+  isLimited?: boolean;
+  originalPrice?: number | null;
+  category?: string;
 }
 
 export interface PaymentInfo {
@@ -87,4 +92,40 @@ export interface CartItem {
   price: number;
   quantity: number;
   imageUrl: string;
+  // Novos campos para dados do banco
+  features?: string[];
+  isLimited?: boolean;
+  originalPrice?: number | null;
+}
+
+// Tipo para dados do relógio do banco (se precisar)
+export interface Watch {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  original_price?: number;
+  rating: number;
+  reviews: number;
+  image_url: string;
+  features: string[];
+  colors: string[];
+  is_new: boolean;
+  is_limited: boolean;
+  created_at: string;
+}
+
+export interface ApiWatch {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  original_price: number | null;
+  rating: number | string;
+  reviews: number;
+  image_url: string;
+  colors: string[];
+  features: string[];
+  is_new: boolean;
+  is_limited: boolean;
 }

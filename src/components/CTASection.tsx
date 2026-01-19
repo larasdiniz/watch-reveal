@@ -1,22 +1,61 @@
+import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import watchHero from "@/assets/watch-hero.png";
+
+interface WatchData {
+  id: number;
+  name: string;
+  price: number;
+  image_url: string;
+}
 
 const CTASection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [featuredWatch, setFeaturedWatch] = useState<WatchData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedWatch = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3001/api/watches/featured');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const watch = await response.json();
+        setFeaturedWatch(watch);
+      } catch (error) {
+        console.error('Erro ao buscar relógio em destaque:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedWatch();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-32 section-padding relative overflow-hidden bg-background">
+        <div className="flex items-center justify-center min-h-[300px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section ref={ref} className="py-32 section-padding relative overflow-hidden">
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-gold/5 to-background" />
       
-      {/* Floating watch background */}
       <div className="absolute inset-0 flex items-center justify-center opacity-10">
         <img 
-          src={watchHero} 
+          src={featuredWatch?.image_url || "/assets/watch-hero.png"} 
           alt="" 
           className="w-full max-w-4xl h-auto blur-sm"
           aria-hidden="true"
@@ -49,14 +88,16 @@ const CTASection = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link to="/comprar">
+          <Link to={`/modelos/${featuredWatch?.id || 1}`}>
             <Button variant="gold" size="lg" className="rounded-full px-10">
               Comprar Agora
             </Button>
           </Link>
-          <Button variant="outline" size="lg" className="rounded-full px-10">
-            Agendar Visita
-          </Button>
+          <Link to="/modelos">
+            <Button variant="outline" size="lg" className="rounded-full px-10">
+              Ver Coleção
+            </Button>
+          </Link>
         </motion.div>
 
         <motion.div

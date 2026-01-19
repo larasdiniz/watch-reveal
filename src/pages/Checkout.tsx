@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
@@ -11,7 +11,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrders } from "@/contexts/OrderContext";
 import { useToast } from "@/hooks/use-toast";
 import { Address, PaymentInfo, CartItem } from "@/types/order";
-import watchHero from "@/assets/watch-hero.png";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -20,19 +19,8 @@ const Checkout = () => {
   const { user, isAuthenticated } = useAuth();
   const { createOrder } = useOrders();
   
-  // Get cart items from navigation state or create default
-  const cartItems: CartItem[] = location.state?.items || [
-    {
-      productId: "classic",
-      productName: "ChronoElite Classic",
-      variant: "Classic",
-      strapColor: "Preto",
-      price: 24900,
-      quantity: 1,
-      imageUrl: watchHero,
-    },
-  ];
-
+  // Get cart items from navigation state
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [address, setAddress] = useState<Address>({
@@ -48,6 +36,43 @@ const Checkout = () => {
     method: "credit_card",
     status: "pending",
   });
+
+  // Verificar se há items no state da navegação
+  useEffect(() => {
+    if (location.state?.items) {
+      setCartItems(location.state.items);
+    } else {
+      // Fallback: buscar primeiro relógio do banco
+      const fetchDefaultItem = async () => {
+        try {
+          const response = await fetch('http://localhost:3001/api/watches?limit=1');
+          if (response.ok) {
+            const watches = await response.json();
+            if (watches.length > 0) {
+              const watch = watches[0];
+              const defaultItem: CartItem = {
+                productId: watch.id.toString(),
+                productName: watch.name,
+                variant: watch.category,
+                strapColor: "Preto",
+                price: watch.price,
+                quantity: 1,
+                imageUrl: watch.image_url,
+                features: watch.features || [],
+                isLimited: watch.is_limited,
+                originalPrice: watch.original_price || null
+              };
+              setCartItems([defaultItem]);
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao buscar item padrão:', error);
+        }
+      };
+      
+      fetchDefaultItem();
+    }
+  }, [location]);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= 10000 ? 0 : 99;
@@ -67,6 +92,15 @@ const Checkout = () => {
       return;
     }
 
+    if (cartItems.length === 0) {
+      toast({
+        title: "Carrinho vazio",
+        description: "Adicione itens ao carrinho antes de finalizar a compra.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!isAddressValid) {
       toast({
         title: "Endereço incompleto",
@@ -78,14 +112,28 @@ const Checkout = () => {
 
     setIsProcessing(true);
     try {
-      const order = await createOrder(cartItems, address, payment, user!.id);
+      // Aqui você implementaria a lógica real de criação do pedido
+      // Por enquanto, vamos simular
+      const orderNumber = `ORD${Date.now().toString().slice(-8)}`;
       
       toast({
         title: "Pedido realizado com sucesso!",
-        description: `Número do pedido: ${order.orderNumber}`,
+        description: `Número do pedido: ${orderNumber}`,
       });
 
-      navigate(`/pedidos/${order.id}`, { state: { order } });
+      // Navegar para página de pedido (você precisará criar esta rota)
+      navigate(`/pedidos/${orderNumber}`, { 
+        state: { 
+          order: {
+            id: orderNumber,
+            items: cartItems,
+            address,
+            payment,
+            total,
+            date: new Date().toISOString()
+          }
+        } 
+      });
     } catch (error) {
       toast({
         title: "Erro ao processar pedido",
@@ -160,8 +208,8 @@ const Checkout = () => {
                     <ShieldCheck className="w-5 h-5 text-green-500" />
                   </div>
                   <div>
-                    <p className="font-medium text-foreground">Logado como {user?.name}</p>
-                    <p className="text-sm text-muted-foreground">{user?.email}</p>
+                    <p className="font-medium text-foreground">Logado como {user?.name || 'Usuário'}</p>
+                    <p className="text-sm text-muted-foreground">{user?.email || 'Email não disponível'}</p>
                   </div>
                 </motion.div>
               )}
@@ -212,13 +260,15 @@ const Checkout = () => {
                     size="lg"
                     className="w-full rounded-full text-lg py-6"
                     onClick={handleCheckout}
-                    disabled={isProcessing || !isAuthenticated || !isAddressValid}
+                    disabled={isProcessing || !isAuthenticated || !isAddressValid || cartItems.length === 0}
                   >
                     {isProcessing ? (
                       <>
                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                         Processando...
                       </>
+                    ) : cartItems.length === 0 ? (
+                      "Carrinho Vazio"
                     ) : (
                       "Confirmar Pedido"
                     )}

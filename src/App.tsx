@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { OrderProvider } from "@/contexts/OrderContext";
+import { LoadingProvider } from "@/contexts/LoadingContext";
 import Index from "./pages/Index";
 import Comprar from "./pages/Comprar";
 import Checkout from "./pages/Checkout";
@@ -14,29 +15,38 @@ import OrderDetail from "./pages/OrderDetail";
 import ModelsPage from "./pages/ModelsPage";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 30000, // 30 segundos
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <CartProvider>
         <OrderProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/comprar" element={<Comprar />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/meus-pedidos" element={<MeusPedidos />} />
-                <Route path="/pedidos/:id" element={<OrderDetail />} />
-                <Route path="/modelos" element={<ModelsPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+          <LoadingProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/comprar" element={<Comprar />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/meus-pedidos" element={<MeusPedidos />} />
+                  <Route path="/pedidos/:id" element={<OrderDetail />} />
+                  <Route path="/modelos" element={<ModelsPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </LoadingProvider>
         </OrderProvider>
       </CartProvider>
     </AuthProvider>
