@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, ChevronRight, Shield, Truck, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CartItem } from "@/types/order";
 import watchHero from "@/assets/watch-hero.png";
 
 const models = [
@@ -45,8 +46,22 @@ const strapColors = [
 ];
 
 const Comprar = () => {
+  const navigate = useNavigate();
   const [selectedModel, setSelectedModel] = useState(models[0]);
   const [selectedStrap, setSelectedStrap] = useState(strapColors[0]);
+
+  const handleCheckout = () => {
+    const cartItem: CartItem = {
+      productId: selectedModel.id,
+      productName: selectedModel.name,
+      variant: selectedModel.id === "gold" ? "Gold Edition" : "Classic",
+      strapColor: selectedStrap.name,
+      price: selectedModel.price,
+      quantity: 1,
+      imageUrl: watchHero,
+    };
+    navigate("/checkout", { state: { items: [cartItem] } });
+  };
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -220,7 +235,12 @@ const Comprar = () => {
                   </div>
                 </div>
 
-                <Button variant="gold" size="lg" className="w-full rounded-full text-lg py-6">
+                <Button 
+                  variant="gold" 
+                  size="lg" 
+                  className="w-full rounded-full text-lg py-6"
+                  onClick={handleCheckout}
+                >
                   Finalizar Compra
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
