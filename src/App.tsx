@@ -13,6 +13,7 @@ import Checkout from "./pages/Checkout";
 import MeusPedidos from "./pages/MeusPedidos";
 import OrderDetail from "./pages/OrderDetail";
 import ModelsPage from "./pages/ModelsPage";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ const App = () => (
                   <Route path="/meus-pedidos" element={<MeusPedidos />} />
                   <Route path="/pedidos/:id" element={<OrderDetail />} />
                   <Route path="/modelos" element={<ModelsPage />} />
+                  <Route path="/modelos/:id" element={<ProductDetail />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

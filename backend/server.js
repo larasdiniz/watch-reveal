@@ -299,10 +299,18 @@ app.get('/api/watches/featured', async (req, res) => {
       SELECT 
         w.*,
         ARRAY_AGG(DISTINCT wc.color_hex) as colors,
-        ARRAY_AGG(DISTINCT wf.feature) as features
+        ARRAY_AGG(DISTINCT wf.feature) as features,
+        JSON_AGG(
+          DISTINCT jsonb_build_object(
+            'type', wi.image_type,
+            'url', wi.image_url,
+            'order', wi.display_order
+          )
+        ) as images
       FROM watches w
       LEFT JOIN watch_colors wc ON w.id = wc.watch_id
       LEFT JOIN watch_features wf ON w.id = wf.watch_id
+      LEFT JOIN watch_images wi ON w.id = wi.watch_id
       WHERE w.id = 1
       GROUP BY w.id
     `;
@@ -315,21 +323,7 @@ app.get('/api/watches/featured', async (req, res) => {
     }
     
     const row = result.rows[0];
-    const watch = {
-      id: row.id,
-      name: row.name,
-      category: row.category,
-      price: row.price,
-      original_price: row.original_price,
-      rating: parseFloat(row.rating),
-      reviews: row.reviews,
-      image_url: row.image_url,
-      colors: row.colors ? row.colors.filter(c => c !== null) : [],
-      features: row.features ? row.features.filter(f => f !== null) : [],
-      is_new: row.is_new,
-      is_limited: row.is_limited,
-      created_at: row.created_at
-    };
+    const watch = processWatchData(row);
     
     cache.set(cacheKey, watch);
     res.json(watch);
@@ -350,6 +344,12 @@ app.get('/api/watches/featured', async (req, res) => {
       image_url: "/assets/watch-hero.png",
       colors: ["#0F172A", "#92400E", "#1E40AF"],
       features: ["Automático", "Aço 316L", "Cristal Safira"],
+      images: {
+        main: "/assets/watch-hero.png",
+        details: ["/assets/watch-detail.png"],
+        straps: ["/assets/watch-strap.png"],
+        gallery: ["/assets/watch-hero.png", "/assets/watch-detail.png", "/assets/watch-strap.png"]
+      },
       is_new: true,
       is_limited: false,
       created_at: new Date().toISOString()
@@ -360,7 +360,7 @@ app.get('/api/watches/featured', async (req, res) => {
   }
 });
 
-// ROTA DINÂMICA: Relógio por ID
+// ROTA DINÂMICA: Relógio por ID (ATUALIZADA)
 app.get('/api/watches/:id', async (req, res) => {
   const { id } = req.params;
   const cacheKey = `watch_${id}`;
@@ -383,10 +383,21 @@ app.get('/api/watches/:id', async (req, res) => {
       SELECT 
         w.*,
         ARRAY_AGG(DISTINCT wc.color_hex) as colors,
-        ARRAY_AGG(DISTINCT wf.feature) as features
+        ARRAY_AGG(DISTINCT wf.feature) as features,
+        COALESCE(
+          JSON_AGG(
+            DISTINCT jsonb_build_object(
+              'type', wi.image_type,
+              'url', wi.image_url,
+              'order', COALESCE(wi.display_order, 0)
+            )
+          ) FILTER (WHERE wi.image_url IS NOT NULL),
+          '[]'
+        ) as images
       FROM watches w
       LEFT JOIN watch_colors wc ON w.id = wc.watch_id
       LEFT JOIN watch_features wf ON w.id = wf.watch_id
+      LEFT JOIN watch_images wi ON w.id = wi.watch_id
       WHERE w.id = $1
       GROUP BY w.id
     `;
@@ -399,21 +410,7 @@ app.get('/api/watches/:id', async (req, res) => {
     }
     
     const row = result.rows[0];
-    const watch = {
-      id: row.id,
-      name: row.name,
-      category: row.category,
-      price: row.price,
-      original_price: row.original_price,
-      rating: parseFloat(row.rating),
-      reviews: row.reviews,
-      image_url: row.image_url,
-      colors: row.colors ? row.colors.filter(c => c !== null) : [],
-      features: row.features ? row.features.filter(f => f !== null) : [],
-      is_new: row.is_new,
-      is_limited: row.is_limited,
-      created_at: row.created_at
-    };
+    const watch = processWatchData(row);
     
     cache.set(cacheKey, watch);
     res.json(watch);
@@ -427,6 +424,53 @@ app.get('/api/watches/:id', async (req, res) => {
     });
   }
 });
+
+// Função auxiliar para processar dados do watch
+function processWatchData(row) {
+  // Processar imagens
+  const images = row.images ? row.images.filter(img => img.url !== null) : [];
+  
+  // Obter imagem principal (ou usar a default da tabela watches)
+  const mainImageObj = images.find(img => img.type === 'main');
+  const mainImage = mainImageObj ? mainImageObj.url : row.image_url;
+  
+  // Agrupar imagens por tipo
+  const detailImages = images
+    .filter(img => img.type === 'detail')
+    .sort((a, b) => a.order - b.order)
+    .map(img => img.url);
+  
+  const strapImages = images
+    .filter(img => img.type === 'strap')
+    .sort((a, b) => a.order - b.order)
+    .map(img => img.url);
+  
+  // Criar galeria com todas as imagens únicas
+  const allImageUrls = [mainImage, ...detailImages, ...strapImages];
+  const gallery = [...new Set(allImageUrls.filter(url => url))];
+  
+  return {
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    price: row.price,
+    original_price: row.original_price,
+    rating: parseFloat(row.rating),
+    reviews: row.reviews,
+    image_url: mainImage,
+    images: {
+      main: mainImage,
+      details: detailImages,
+      straps: strapImages,
+      gallery: gallery
+    },
+    colors: row.colors ? row.colors.filter(c => c !== null) : [],
+    features: row.features ? row.features.filter(f => f !== null) : [],
+    is_new: row.is_new,
+    is_limited: row.is_limited,
+    created_at: row.created_at
+  };
+}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
