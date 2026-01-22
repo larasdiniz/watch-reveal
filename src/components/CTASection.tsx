@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface WatchData {
   id: number;
@@ -21,7 +24,8 @@ const CTASection = () => {
     const fetchFeaturedWatch = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3001/api/watches/featured');
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches/featured`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

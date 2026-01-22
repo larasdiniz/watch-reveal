@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface HeroWatch {
   id: number;
@@ -17,7 +20,8 @@ const HeroSection = () => {
   useEffect(() => {
     const fetchHeroWatch = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/watches?limit=1');
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches?limit=1`);
         if (response.ok) {
           const watches = await response.json();
           if (watches.length > 0) {

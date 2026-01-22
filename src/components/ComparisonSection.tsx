@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Check, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface Watch {
   id: number;
@@ -45,7 +48,8 @@ const ComparisonSection = () => {
     const fetchComparisonModels = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3001/api/watches/compare');
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches/compare`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

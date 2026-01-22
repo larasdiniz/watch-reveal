@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Zap, Target, Wrench } from "lucide-react";
+
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface WatchData {
   id: number;
@@ -35,7 +38,8 @@ const FeatureStory = () => {
     const fetchWatchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3001/api/watches/1');
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches/1`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

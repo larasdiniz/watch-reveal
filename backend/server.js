@@ -4,7 +4,21 @@ const { Client } = require('pg');
 const NodeCache = require('node-cache');
 
 const app = express();
-app.use(cors());
+
+// IMPORTANTE: Configure CORS para produção
+const corsOptions = {
+  origin: [
+    'http://localhost:8080',
+    'http://localhost:3000',
+    'https://*.vercel.app',
+    'https://vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Cache com tempo de vida de 60 segundos
@@ -27,6 +41,9 @@ app.use((req, res, next) => {
   console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.url}`);
   next();
 });
+
+// Middleware para OPTIONS (CORS preflight)
+app.options('*', cors(corsOptions));
 
 // Health check
 app.get('/api/health', async (req, res) => {
@@ -472,14 +489,17 @@ function processWatchData(row) {
   };
 }
 
-const PORT = process.env.PORT || 3001;
+// IMPORTANTE: Mude de 3001 para 10000 aqui ↓
+const PORT = process.env.PORT || 10000;
+
 app.listen(PORT, () => {
   console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
-  console.log(`🔗 Health: http://localhost:${PORT}/api/health`);
-  console.log(`🔗 Test: http://localhost:${PORT}/api/test`);
-  console.log(`🔗 Watches: http://localhost:${PORT}/api/watches`);
-  console.log(`🔗 Compare: http://localhost:${PORT}/api/watches/compare`);
-  console.log(`🔗 Featured: http://localhost:${PORT}/api/watches/featured`);
-  console.log(`🔗 Watches by ID: http://localhost:${PORT}/api/watches/1`);
+  console.log(`🔗 Health: https://seu-backend.onrender.com/api/health`);
+  console.log(`🔗 Test: https://seu-backend.onrender.com/api/test`);
+  console.log(`🔗 Watches: https://seu-backend.onrender.com/api/watches`);
+  console.log(`🔗 Compare: https://seu-backend.onrender.com/api/watches/compare`);
+  console.log(`🔗 Featured: https://seu-backend.onrender.com/api/watches/featured`);
+  console.log(`🔗 Watches by ID: https://seu-backend.onrender.com/api/watches/1`);
   console.log(`\n📊 Pronto para usar!`);
+  console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
 });

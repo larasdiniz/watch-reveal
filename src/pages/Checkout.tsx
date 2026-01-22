@@ -12,6 +12,9 @@ import { useOrders } from "@/contexts/OrderContext";
 import { useToast } from "@/hooks/use-toast";
 import { Address, PaymentInfo, CartItem } from "@/types/order";
 
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 const Checkout = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,7 +48,8 @@ const Checkout = () => {
       // Fallback: buscar primeiro relógio do banco
       const fetchDefaultItem = async () => {
         try {
-          const response = await fetch('http://localhost:3001/api/watches?limit=1');
+          // MODIFIQUE ESTA LINHA ↓
+          const response = await fetch(`${API_URL}/api/watches?limit=1`);
           if (response.ok) {
             const watches = await response.json();
             if (watches.length > 0) {

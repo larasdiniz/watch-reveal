@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Gem, Droplets, Shield, Watch, Zap } from "lucide-react";
+
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface GalleryCard {
   id: number;
@@ -21,7 +24,7 @@ const MediaCardGallery = () => {
       id: 1,
       title: "Precisão Suíça",
       subtitle: "Movimento automático de alta precisão com 72h de reserva de marcha.",
-      image: "/assets/watch-hero-detail.png", // Alterado para watch-hero-detail
+      image: "/assets/watch-hero-detail.png",
       size: "large",
     },
     {
@@ -45,16 +48,16 @@ const MediaCardGallery = () => {
       id: 4,
       title: "Pulseira Premium",
       subtitle: "Pulseira artesanal cortada à mão em couro Italiano.",
-      image: "/assets/watch-hero-strap.png", // Alterado para watch-hero-strap
+      image: "/assets/watch-hero-strap.png",
       size: "medium",
     },
   ]);
 
-  // Se quiser buscar mais detalhes do banco para o relógio principal
   useEffect(() => {
     const fetchWatchDetails = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/watches/1'); // Buscar o relógio principal (ID 1)
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches/1`);
         if (response.ok) {
           const watch = await response.json();
           

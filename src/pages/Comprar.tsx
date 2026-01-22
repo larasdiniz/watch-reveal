@@ -5,6 +5,9 @@ import { ArrowLeft, Check, ChevronRight, Shield, Truck, RefreshCw } from "lucide
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/order";
 
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 interface Watch {
   id: number;
   name: string;
@@ -42,7 +45,8 @@ const Comprar = () => {
     const fetchWatches = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3001/api/watches');
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

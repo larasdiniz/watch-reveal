@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { 
@@ -21,6 +21,9 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+// ADICIONE ESTA LINHA NO TOPO (depois dos imports)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface Watch {
   id: number;
@@ -59,7 +62,8 @@ const ProductDetail = () => {
     const fetchWatch = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3001/api/watches/${id}`);
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches/${id}`);
         
         if (!response.ok) {
           if (response.status === 404) {

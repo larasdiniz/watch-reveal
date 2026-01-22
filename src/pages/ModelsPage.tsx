@@ -15,6 +15,9 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+// ADICIONE ESTA LINHA NO TOPO
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 // Filtros disponíveis
 const categories = ["Todos", "Clássico", "Premium", "Esportivo", "Minimalista", "Vintage", "Mergulho", "Alta Relojoaria", "Viagem"];
 const priceRanges = [
@@ -103,7 +106,8 @@ const ModelsPage = () => {
         
         params.append('sortBy', sortBy);
         
-        const response = await fetch(`http://localhost:3001/api/watches?${params.toString()}`);
+        // MODIFIQUE ESTA LINHA ↓
+        const response = await fetch(`${API_URL}/api/watches?${params.toString()}`);
         
         if (!response.ok) {
           throw new Error(`Erro HTTP: ${response.status}`);
@@ -382,10 +386,7 @@ const ModelsPage = () => {
                     Edições Limitadas
                   </Badge>
                   <Badge variant="outline" className="w-full justify-center py-2">
-                    Lançamentos Recentes
-                  </Badge>
-                  <Badge variant="outline" className="w-full justify-center py-2">
-                    Mais Vendidos
+                    Lançamentos Recente
                   </Badge>
                 </div>
               </div>
