@@ -4,14 +4,13 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
-  base: '/', // IMPORTANTE para Vercel
+  base: '/', // IMPORTANTE: deve ser '/'
   server: {
     host: "::",
     port: 8080,
     hmr: {
       overlay: false,
     },
-    // Proxy para desenvolvimento
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
@@ -26,7 +25,6 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Configuração de build para produção
   build: {
     outDir: 'dist',
     sourcemap: false,
@@ -34,7 +32,19 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-        }
+        },
+        // CONFIGURAÇÃO CORRIGIDA:
+        assetFileNames: (assetInfo) => {
+          if (!assetInfo.name) {
+            return 'assets/[name]-[hash][extname]';
+          }
+          
+          const ext = assetInfo.name.split('.').pop() || 'unknown';
+          const extType = /png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext) ? 'img' : ext;
+          return `assets/${extType}/[name]-[hash][extname]`;
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js'
       }
     }
   }
