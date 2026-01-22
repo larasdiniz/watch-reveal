@@ -4,22 +4,7 @@ const { Client } = require('pg');
 const NodeCache = require('node-cache');
 
 const app = express();
-
-// IMPORTANTE: Configure CORS para produção
-const corsOptions = {
-  origin: [
-    'http://localhost:8080',
-    'http://localhost:3000',
-    'https://*.vercel.app',
-    'https://vercel.app'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
-
-// CORS configurado corretamente - REMOVIDO o app.options('*') que causava erro
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 // Cache com tempo de vida de 60 segundos
@@ -487,37 +472,14 @@ function processWatchData(row) {
   };
 }
 
-// Rota para requisições OPTIONS (CORS) - FORA do middleware principal
-app.options('/api/*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.sendStatus(200);
-});
-
-// Rota para qualquer outra requisição não encontrada
-app.all('*', (req, res) => {
-  res.status(404).json({
-    error: 'Rota não encontrada',
-    path: req.originalUrl,
-    method: req.method,
-    available_routes: [
-      '/api/health',
-      '/api/test',
-      '/api/watches',
-      '/api/watches/compare',
-      '/api/watches/featured',
-      '/api/watches/:id'
-    ]
-  });
-});
-
-// IMPORTANTE: Mude de 3001 para 10000 aqui ↓
 const PORT = process.env.PORT || 10000;
-
 app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
-  console.log(`🌐 Acesse: http://localhost:${PORT}`);
-  console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
+  console.log(`🔗 Health: http://localhost:${PORT}/api/health`);
+  console.log(`🔗 Test: http://localhost:${PORT}/api/test`);
+  console.log(`🔗 Watches: http://localhost:${PORT}/api/watches`);
+  console.log(`🔗 Compare: http://localhost:${PORT}/api/watches/compare`);
+  console.log(`🔗 Featured: http://localhost:${PORT}/api/watches/featured`);
+  console.log(`🔗 Watches by ID: http://localhost:${PORT}/api/watches/1`);
+  console.log(`\n📊 Pronto para usar!`);
 });
