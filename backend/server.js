@@ -18,6 +18,7 @@ const corsOptions = {
   credentials: true
 };
 
+// CORS configurado corretamente - REMOVIDO o app.options('*') que causava erro
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -41,9 +42,6 @@ app.use((req, res, next) => {
   console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.url}`);
   next();
 });
-
-// Middleware para OPTIONS (CORS preflight)
-app.options('*', cors(corsOptions));
 
 // Health check
 app.get('/api/health', async (req, res) => {
@@ -489,17 +487,37 @@ function processWatchData(row) {
   };
 }
 
+// Rota para requisições OPTIONS (CORS) - FORA do middleware principal
+app.options('/api/*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.sendStatus(200);
+});
+
+// Rota para qualquer outra requisição não encontrada
+app.all('*', (req, res) => {
+  res.status(404).json({
+    error: 'Rota não encontrada',
+    path: req.originalUrl,
+    method: req.method,
+    available_routes: [
+      '/api/health',
+      '/api/test',
+      '/api/watches',
+      '/api/watches/compare',
+      '/api/watches/featured',
+      '/api/watches/:id'
+    ]
+  });
+});
+
 // IMPORTANTE: Mude de 3001 para 10000 aqui ↓
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
-  console.log(`🔗 Health: https://seu-backend.onrender.com/api/health`);
-  console.log(`🔗 Test: https://seu-backend.onrender.com/api/test`);
-  console.log(`🔗 Watches: https://seu-backend.onrender.com/api/watches`);
-  console.log(`🔗 Compare: https://seu-backend.onrender.com/api/watches/compare`);
-  console.log(`🔗 Featured: https://seu-backend.onrender.com/api/watches/featured`);
-  console.log(`🔗 Watches by ID: https://seu-backend.onrender.com/api/watches/1`);
-  console.log(`\n📊 Pronto para usar!`);
-  console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Servidor rodando na porta ${PORT}`);
+  console.log(`🌐 Acesse: http://localhost:${PORT}`);
+  console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
 });
