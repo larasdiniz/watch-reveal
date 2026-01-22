@@ -1,47 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "https://watch-reveal-backend.onrender.com/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    },
-    {
-      "src": "/(.*)",
-      "status": 200,
-      "headers": {
-        "Content-Type": "text/html"
-      }
-    }
-  ],
-  "headers": [
-    {
-      "source": "/assets/(.*\\.js)",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ],
-  "env": {
-    "VITE_API_URL": "https://watch-reveal-backend.onrender.com"
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite"
 }
