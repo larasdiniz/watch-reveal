@@ -4,7 +4,23 @@ const { Client } = require('pg');
 const NodeCache = require('node-cache');
 
 const app = express();
-app.use(cors());
+
+// 🔧 CORS CONFIGURADO PARA ACEITAR O VERCEL
+const corsOptions = {
+  origin: [
+    'http://localhost:8080',
+    'http://localhost:3000',
+    'https://*.vercel.app',       // Aceita TODOS os domínios do Vercel
+    'https://vercel.app',
+    'https://watch-reveal.vercel.app'  // Seu domínio específico
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+// Use o CORS configurado
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Cache com tempo de vida de 60 segundos
@@ -482,4 +498,5 @@ app.listen(PORT, () => {
   console.log(`🔗 Featured: http://localhost:${PORT}/api/watches/featured`);
   console.log(`🔗 Watches by ID: http://localhost:${PORT}/api/watches/1`);
   console.log(`\n📊 Pronto para usar!`);
+  console.log(`🌐 Aceitando requisições do Vercel: https://watch-reveal.vercel.app`);
 });
