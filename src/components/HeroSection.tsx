@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const HeroSection = () => {
-  // Valores hardcoded para o hero
+  // Valores corrigidos
   const heroWatch = {
     name: "ChronoElite Classic",
-    price: 24900, 
+    price: 29000, // R$ 290,00 em centavos
   };
 
   return (
@@ -49,7 +49,6 @@ const HeroSection = () => {
          
           <div className="h-8 w-px bg-white/20"></div>
          
-          {/* Link para uma página específica ou para a coleção */}
           <Link to="/modelos">
             <Button variant="gold" size="lg" className="rounded-full px-6">
               Comprar

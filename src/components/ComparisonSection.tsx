@@ -22,14 +22,14 @@ const ComparisonSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
-  // Dados estáticos
+  // Dados estáticos com preços corrigidos
   const models: ComparisonModel[] = [
     {
       id: 1,
       name: "ChronoElite Classic",
       tagline: "O equilíbrio perfeito entre elegância e funcionalidade.",
-      formattedPrice: "R$ 24.900",
-      originalPrice: "R$ 29.900",
+      formattedPrice: "R$ 290,00",
+      originalPrice: "R$ 349,00",
       image: "/assets/watch-hero.png",
       isHighlighted: false,
       features: [
@@ -45,9 +45,9 @@ const ComparisonSection = () => {
       id: 2,
       name: "ChronoElite Gold Edition",
       tagline: "Exclusividade em cada detalhe. Ouro 18K genuíno.",
-      formattedPrice: "R$ 49.900",
-      originalPrice: "R$ 59.900",
-      image: "/assets/watch-model3.png", // Imagem estática
+      formattedPrice: "R$ 590,00",
+      originalPrice: "R$ 699,00",
+      image: "/assets/watch-model3.png",
       isHighlighted: true,
       features: [
         { label: 'Movimento Suíço Automático', available: true },

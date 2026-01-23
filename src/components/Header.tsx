@@ -44,7 +44,7 @@ const Header = () => {
           {/* CTA */}
           <div className="flex items-center gap-4">
             <span className="hidden sm:block text-sm text-muted-foreground">
-              A partir de <span className="text-foreground font-medium">R$ 24.900</span>
+              A partir de <span className="text-foreground font-medium">R$ 249.00</span>
             </span>
             <Link to="/comprar">
               <Button variant="gold" size="sm" className="rounded-full">
