@@ -1,57 +1,19 @@
-﻿import { useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
+﻿import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-// ADICIONE ESTA LINHA NO TOPO
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-interface WatchData {
-  id: number;
-  name: string;
-  price: number;
-  image_url: string;
-}
-
 const CTASection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [featuredWatch, setFeaturedWatch] = useState<WatchData | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchFeaturedWatch = async () => {
-      try {
-        setLoading(true);
-        // MODIFIQUE ESTA LINHA ↓
-        const response = await fetch(`${API_URL}/api/watches/featured`);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const watch = await response.json();
-        setFeaturedWatch(watch);
-      } catch (error) {
-        console.error('Erro ao buscar relógio em destaque:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedWatch();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="py-32 section-padding relative overflow-hidden bg-background">
-        <div className="flex items-center justify-center min-h-[300px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-        </div>
-      </section>
-    );
-  }
+  // Dados estáticos
+  const featuredWatch = {
+    id: 1, // ID padrão para o produto em destaque
+    name: "ChronoElite Classic",
+    price: 24900,
+    image: "/assets/watch-hero.png" // Imagem estática
+  };
 
   return (
     <section ref={ref} className="py-32 section-padding relative overflow-hidden">
@@ -59,10 +21,11 @@ const CTASection = () => {
       
       <div className="absolute inset-0 flex items-center justify-center opacity-10">
         <img 
-          src={featuredWatch?.image_url || "/assets/watch-hero.png"} 
+          src={featuredWatch.image} 
           alt="" 
           className="w-full max-w-4xl h-auto blur-sm"
           aria-hidden="true"
+          loading="lazy"
         />
       </div>
 
@@ -92,7 +55,7 @@ const CTASection = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link to={`/modelos/${featuredWatch?.id || 1}`}>
+          <Link to={`/modelos/${featuredWatch.id}`}>
             <Button variant="gold" size="lg" className="rounded-full px-10">
               Comprar Agora
             </Button>

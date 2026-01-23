@@ -1,50 +1,13 @@
-﻿import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-// ADICIONE ESTA LINHA NO TOPO
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-interface HeroWatch {
-  id: number;
-  name: string;
-  price: number;
-  image_url: string;
-}
-
 const HeroSection = () => {
-  const [heroWatch, setHeroWatch] = useState<HeroWatch | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchHeroWatch = async () => {
-      try {
-        // MODIFIQUE ESTA LINHA ↓
-        const response = await fetch(`${API_URL}/api/watches?limit=1`);
-        if (response.ok) {
-          const watches = await response.json();
-          if (watches.length > 0) {
-            setHeroWatch(watches[0]);
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao buscar relógio do herói:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHeroWatch();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="relative min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-      </section>
-    );
-  }
+  // Valores hardcoded para o hero
+  const heroWatch = {
+    name: "ChronoElite Classic",
+    price: 24900, 
+  };
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-background">
@@ -77,16 +40,17 @@ const HeroSection = () => {
         >
           <div className="text-left">
             <div className="text-muted-foreground text-sm">
-              {heroWatch ? heroWatch.name : "ChronoElite Classic"}
+              {heroWatch.name}
             </div>
             <div className="text-foreground font-medium text-lg">
-              R$ {heroWatch ? (heroWatch.price / 100).toFixed(2).replace('.', ',') : "24.900"}
+              R$ {(heroWatch.price / 100).toFixed(2).replace('.', ',')}
             </div>
           </div>
          
           <div className="h-8 w-px bg-white/20"></div>
          
-          <Link to={`/modelos/${heroWatch?.id || 1}`}>
+          {/* Link para uma página específica ou para a coleção */}
+          <Link to="/modelos">
             <Button variant="gold" size="lg" className="rounded-full px-6">
               Comprar
             </Button>
@@ -101,8 +65,8 @@ const HeroSection = () => {
         className="relative z-10 w-full max-w-5xl px-6 mt-8"
       >
         <motion.img
-          src={heroWatch?.image_url || "/assets/watch-hero.png"}
-          alt={heroWatch ? heroWatch.name : "ChronoElite Premium Watch"}
+          src="/assets/watch-hero.png"
+          alt={heroWatch.name}
           className="w-full h-auto object-contain"
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}

@@ -1,24 +1,10 @@
-﻿import { useState, useEffect } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+﻿import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Zap, Target, Wrench } from "lucide-react";
-
-// ADICIONE ESTA LINHA NO TOPO
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-interface WatchData {
-  id: number;
-  name: string;
-  category: string;
-  image_url: string;
-  features: string[];
-}
 
 const FeatureStory = () => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
-  const [watchData, setWatchData] = useState<WatchData | null>(null);
-  const [loading, setLoading] = useState(true);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -34,38 +20,6 @@ const FeatureStory = () => {
     { Icon: Wrench, title: "Manutenção Simplificada", desc: "Revisão a cada 5 anos" },
   ];
 
-  useEffect(() => {
-    const fetchWatchData = async () => {
-      try {
-        setLoading(true);
-        // MODIFIQUE ESTA LINHA ↓
-        const response = await fetch(`${API_URL}/api/watches/1`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        setWatchData(data);
-      } catch (error) {
-        console.error('Erro ao buscar dados do relógio:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWatchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="relative py-32 overflow-hidden bg-background">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section ref={containerRef} className="relative py-32 overflow-hidden">
       <motion.div 
@@ -73,9 +27,10 @@ const FeatureStory = () => {
         style={{ scale: imageScale, opacity: imageOpacity }}
       >
         <img
-          src={watchData?.image_url || "/assets/watch-detail.png"}
-          alt={watchData?.name || "Watch Detail"}
+          src="/assets/watch-detail.png" // Imagem estática
+          alt="Watch Detail"
           className="w-full h-full object-cover"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/60" />
       </motion.div>
@@ -89,7 +44,7 @@ const FeatureStory = () => {
               transition={{ duration: 0.6 }}
               className="text-gold uppercase tracking-[0.3em] text-sm font-medium mb-6 block"
             >
-              {watchData?.category || "Desempenho"}
+              Desempenho
             </motion.span>
             
             <motion.h2

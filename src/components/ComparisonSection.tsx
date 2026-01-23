@@ -1,33 +1,13 @@
-﻿import { useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
+﻿import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Check, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// ADICIONE ESTA LINHA NO TOPO
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-interface Watch {
-  id: number;
-  name: string;
-  price: number;
-  original_price: number | null;
-  category: string;
-  image_url: string;
-  features: string[];
-  colors: string[];
-  is_new: boolean;
-  is_limited: boolean;
-  rating: number;
-  reviews: number;
-}
-
 interface ComparisonModel {
   id: number;
   name: string;
   tagline: string;
-  price: string;
   formattedPrice: string;
   originalPrice: string | null;
   image: string;
@@ -41,97 +21,44 @@ interface ComparisonModel {
 const ComparisonSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [models, setModels] = useState<ComparisonModel[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchComparisonModels = async () => {
-      try {
-        setLoading(true);
-        // MODIFIQUE ESTA LINHA ↓
-        const response = await fetch(`${API_URL}/api/watches/compare`);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const watches: Watch[] = await response.json();
-        
-        const selectedWatches = watches.slice(0, 2);
-        
-        const comparisonModels: ComparisonModel[] = selectedWatches.map((watch, index) => {
-          const taglines: Record<string, string> = {
-            'Clássico': 'O equilíbrio perfeito entre elegância e funcionalidade.',
-            'Premium': 'Exclusividade em cada detalhe. Ouro 18K genuíno.',
-            'Esportivo': 'Desempenho e resistência para seu estilo ativo.',
-            'Minimalista': 'Simplicidade e sofisticação em design puro.',
-            'Vintage': 'Tradição e história em cada detalhe.',
-            'Mergulho': 'Resistência extrema para aventuras aquáticas.',
-            'Alta Relojoaria': 'A arte suprema da relojoaria suíça.',
-            'Viagem': 'Explore o mundo com estilo e funcionalidade.',
-          };
-
-          const commonFeatures = [
-            { label: 'Movimento Suíço Automático', key: 'automático' },
-            { label: 'Cristal Safira Anti-Reflexo', key: 'cristal' },
-            { label: 'Pulseira de Couro Italiano', key: 'couro' },
-            { label: 'Edição Limitada 500 unidades', key: 'limited' },
-            { label: 'Resistência à Água 100m', key: 'resistência' },
-            { label: 'Cronógrafo Integrado', key: 'cronógrafo' },
-          ];
-
-          const modelFeatures = commonFeatures.map(feature => {
-            const hasFeature = watch.features?.some(f => 
-              f.toLowerCase().includes(feature.key.toLowerCase())
-            );
-            
-            if (feature.key === 'limited') {
-              return {
-                label: feature.label,
-                available: watch.is_limited
-              };
-            }
-
-            return {
-              label: feature.label,
-              available: hasFeature || false
-            };
-          });
-
-          return {
-            id: watch.id,
-            name: watch.name,
-            tagline: taglines[watch.category] || 'Excelência em cada detalhe.',
-            price: `R$ ${(watch.price / 100).toFixed(2).replace('.', ',')}`,
-            formattedPrice: `R$ ${(watch.price).toLocaleString('pt-BR')}`,
-            originalPrice: watch.original_price ? `R$ ${(watch.original_price).toLocaleString('pt-BR')}` : null,
-            image: watch.image_url,
-            isHighlighted: watch.is_limited || index === 1,
-            features: modelFeatures
-          };
-        });
-
-        setModels(comparisonModels);
-      } catch (error) {
-        console.error('Erro ao buscar modelos para comparação:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchComparisonModels();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="py-24 section-padding bg-surface-elevated/30">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando comparação...</p>
-        </div>
-      </section>
-    );
-  }
+  // Dados estáticos
+  const models: ComparisonModel[] = [
+    {
+      id: 1,
+      name: "ChronoElite Classic",
+      tagline: "O equilíbrio perfeito entre elegância e funcionalidade.",
+      formattedPrice: "R$ 24.900",
+      originalPrice: "R$ 29.900",
+      image: "/assets/watch-hero.png",
+      isHighlighted: false,
+      features: [
+        { label: 'Movimento Suíço Automático', available: true },
+        { label: 'Cristal Safira Anti-Reflexo', available: true },
+        { label: 'Pulseira de Couro Italiano', available: true },
+        { label: 'Edição Limitada 500 unidades', available: false },
+        { label: 'Resistência à Água 100m', available: true },
+        { label: 'Cronógrafo Integrado', available: true },
+      ]
+    },
+    {
+      id: 2,
+      name: "ChronoElite Gold Edition",
+      tagline: "Exclusividade em cada detalhe. Ouro 18K genuíno.",
+      formattedPrice: "R$ 49.900",
+      originalPrice: "R$ 59.900",
+      image: "/assets/watch-model3.png", // Imagem estática
+      isHighlighted: true,
+      features: [
+        { label: 'Movimento Suíço Automático', available: true },
+        { label: 'Cristal Safira Anti-Reflexo', available: true },
+        { label: 'Pulseira de Couro Italiano', available: true },
+        { label: 'Edição Limitada 500 unidades', available: true },
+        { label: 'Resistência à Água 100m', available: true },
+        { label: 'Cronógrafo Integrado', available: true },
+      ]
+    }
+  ];
 
   return (
     <section ref={ref} className="py-24 section-padding bg-surface-elevated/30">
@@ -168,10 +95,7 @@ const ComparisonSection = () => {
               {model.isHighlighted && (
                 <div className="absolute top-6 right-6">
                   <span className="bg-gold text-background text-xs font-medium px-3 py-1 rounded-full">
-                    {model.name.includes('Gold') || model.name.includes('Tourbillon') 
-                      ? 'Edição Premium' 
-                      : 'Edição Limitada'
-                    }
+                    Edição Premium
                   </span>
                 </div>
               )}
@@ -181,6 +105,7 @@ const ComparisonSection = () => {
                   src={model.image}
                   alt={model.name}
                   className="w-full h-full object-contain"
+                  loading="lazy"
                 />
                 {model.isHighlighted && (
                   <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
@@ -208,7 +133,7 @@ const ComparisonSection = () => {
 
               <div className="space-y-3 mb-8">
                 {model.features.map((feature, idx) => (
-                  <div key={`${model.id}-${idx}`} className="flex items-center gap-3">
+                  <div key={idx} className="flex items-center gap-3">
                     <div className={`w-5 h-5 rounded-full flex items-center justify-center
                       ${feature.available ? "bg-gold/20" : "bg-muted"}
                     `}>
